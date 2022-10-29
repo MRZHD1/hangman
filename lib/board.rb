@@ -17,9 +17,8 @@ class Game
     if gets.chomp.downcase == 'load'
       load()
     else
-      display('Guess a letter!')
+      display()
     end
-    
   end
 
   def guess(letter)
@@ -27,11 +26,8 @@ class Game
 
     if letter == 'save'
       save()
-      display('Game saved.')
-      @save = false
 
     elsif LETTERS.include?(letter) && !(@guesses.include?(letter))
-
       @guesses.push(letter)
 
       if @word.include?(letter)
@@ -64,7 +60,7 @@ class Game
   end
 
   private
-  def display(msg = '')
+  def display(msg = 'Guess a letter!')
     system('clear')
     puts """If you wish to save a game, type in 'save'\n
     Wins: #{@@wins} / Losses: #{@@losses}
@@ -79,7 +75,7 @@ class Game
   def load
     list = ""
     game_data = File.read('./saved_games.txt').split.each_slice(2).to_a
-
+    p game_data
     game_data.each_with_index do |game, index|
       list += "\n#{index} | Word length: #{game[1].split(',')[0].length} / Bad guesses: #{game[0]} / Remaining number of guesses: #{7 - game[0].length}"
     end
@@ -103,8 +99,12 @@ class Game
 
   private
   def save
-    File.write("./saved_games.txt", "\n#{@bad_guesses.join(',')}\n#{@word},#{@display.join('')}", mode: "a")
-    @saved = true
+    unless @bad_guesses.empty?
+      File.write("./saved_games.txt", "\n#{@bad_guesses.join(',')}\n#{@word},#{@display.join('')}", mode: "a")
+      @saved = true
+      display('Game saved.')
+    else
+      display("Couldn't save an empty game!")
+    end
   end
-
 end
