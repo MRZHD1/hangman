@@ -75,7 +75,7 @@ class Game
   def load
     list = ""
     game_data = File.read('./saved_games.txt').split.each_slice(2).to_a
-    p game_data
+    
     game_data.each_with_index do |game, index|
       list += "\n#{index} | Word length: #{game[1].split(',')[0].length} / Bad guesses: #{game[0]} / Remaining number of guesses: #{7 - game[0].length}"
     end
