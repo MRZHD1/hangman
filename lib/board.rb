@@ -11,7 +11,9 @@ class Game
     @bad_guesses = []
     @saved = false
     @display = ['_']*@word.length
+
     puts "If you would like to load a game, type in load, otherwise type in any key"
+
     if gets.chomp.downcase == 'load'
       load()
     else
@@ -22,10 +24,12 @@ class Game
 
   def guess(letter)
     letter.downcase!
+
     if letter == 'save'
       save()
       display('Game saved.')
       @save = false
+
     elsif LETTERS.include?(letter) && !(@guesses.include?(letter))
 
       @guesses.push(letter)
@@ -62,13 +66,13 @@ class Game
   private
   def display(msg = '')
     system('clear')
-    puts "If you wish to save a game, type in 'save'\n"
-    puts "Wins: #{@@wins} / Losses: #{@@losses}"
-    puts "-------------------------------"
-    puts "#{msg}\n"
-    puts "Bad guesses: #{@bad_guesses.join(' ')}"
-    puts "\n#{@display.join(' ')}"
-    puts "\n"
+    puts """If you wish to save a game, type in 'save'\n
+    Wins: #{@@wins} / Losses: #{@@losses}
+    -------------------------------
+    #{msg}
+    Bad guesses: #{@bad_guesses.join(' ')}
+    #{@display.join(' ')}
+    \n"""
   end
 
   private
@@ -77,11 +81,11 @@ class Game
     game_data = File.read('./saved_games.txt').split.each_slice(2).to_a
 
     game_data.each_with_index do |game, index|
-      list += "\n#{index} | Word length: #{game[1].split(',')[0].length} / Bad guesses: #{game[0]}"
+      list += "\n#{index} | Word length: #{game[1].split(',')[0].length} / Bad guesses: #{game[0]} / Remaining number of guesses: #{7 - game[0].length}"
     end
 
     puts list.chomp
-    puts "\n What game would you like to load? Type in the number you wish to load, otherwise type in an invalid number to pick a random word"
+    puts "What game would you like to load? Type in the number you wish to load, otherwise type in an invalid number to pick a random word"
 
     num = gets.chomp
     if ('0'..(game_data.length-1).to_s).to_a.include?(num)
@@ -90,6 +94,7 @@ class Game
       @display = game_data[num][1].split(',')[1].split('')
       @bad_guesses = game_data[num][0].split(',')
       @guesses = @bad_guesses + ((@display.join('').delete "_").split(''))
+      
       display('Game successfully loaded! Guess a letter.')
     else
       display('Invalid game number, started a new game. Guess a letter!')
